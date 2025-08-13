@@ -1,0 +1,40 @@
+name: Main
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: set package info
+        id: set_json_content
+        run: |
+          content=`cat ./config.json`
+          //複数行の場合は特殊文字をパース可能な文字に置き換える
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          echo "::set-output name=packageJson::$content"
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/${{ fromJSON(steps.set_json_content.outputs.packageJson).name }}-${{ fromJSON(steps.set_json_content.outputs.packageJson).version }}.zip
