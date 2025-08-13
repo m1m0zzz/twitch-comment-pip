@@ -15,7 +15,6 @@ export default defineManifest({
     default_popup: 'src/popup/index.html',
   },
   permissions: [
-    'contentSettings',
     'activeTab',
     'scripting'
   ],
