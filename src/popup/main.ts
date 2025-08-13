@@ -1,3 +1,4 @@
+import "./styles.css"
 // console.log("hello from popup")
 
 const isSupported = 'documentPictureInPicture' in window
@@ -46,5 +47,11 @@ chrome.scripting.executeScript({
 })
 
 document.querySelector('#app')!.innerHTML = `
-  <div>${isSupported ? "popup comment!" : "Picture in Picture is not supported this browser."}</div>
+  <div class="container">
+    <div class="heading">Twitch Comment PiP</div>
+    <div>
+      ${isSupported ? "Popup comment!" : "Picture in Picture is not supported this browser."}
+    </div>
+    <a href="https://github.com/m1m0zzz/twitch-comment-pip" target="_blank" rel="noopener noreferrer">Support</a>
+  </div>
 `
