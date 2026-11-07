@@ -10,19 +10,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x]
     permissions:
       contents: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: ".nvmrc"
+      # npm 12 を同梱する Node がまだ無いため明示的に入れる。
+      # .npmrc と engines が npm 12 前提なので、無いと npm ci が EBADENGINE で落ちる
+      - run: npm install -g npm@12
       - name: set package info
         id: set_json_content
         run: |
